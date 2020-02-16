@@ -43,7 +43,9 @@ export const Owner = styled.header`
 `;
 
 export const Issues = styled.ul`
-  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
   margin-top: 30px;
   border-top: 1px solid #eee;
   list-style: none;
@@ -100,4 +102,16 @@ export const Issues = styled.ul`
       color: #999;
     }
   }
+`;
+
+export const Select = styled.select`
+  align-self: flex-end;
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  padding: 5px;
+  border-radius: 5px;
+  color: #7159c1;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100px;
 `;

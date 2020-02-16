@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Loading, Owner, Issues } from './styles';
+import { Loading, Owner, Issues, Select } from './styles';
 
 export default class Repository extends Component {
   constructor(props) {
@@ -16,11 +16,13 @@ export default class Repository extends Component {
       repository: {},
       issues: [],
       loading: true,
+      state: 'all',
     };
   }
 
   async componentDidMount() {
     const { match } = this.props;
+    const { state } = this.state;
 
     const repoName = decodeURIComponent(match.params.repository);
 
@@ -28,7 +30,7 @@ export default class Repository extends Component {
       api.get(`/repos/${repoName}`),
       api.get(`/repos/${repoName}/issues`, {
         params: {
-          state: 'open',
+          state,
           per_page: 5,
         },
       }),
@@ -38,6 +40,30 @@ export default class Repository extends Component {
       repository: repository.data,
       issues: issues.data,
       loading: false,
+    });
+  }
+
+  handleSelectChange = e => {
+    this.setState({ state: e.target.value });
+
+    this.fetchIssues();
+  };
+
+  async fetchIssues() {
+    const { match } = this.props;
+    const { state } = this.state;
+
+    const repoName = decodeURIComponent(match.params.repository);
+
+    const response = await api.get(`/repos/${repoName}/issues`, {
+      params: {
+        state,
+        per_page: 5,
+      },
+    });
+
+    this.setState({
+      issues: response.data,
     });
   }
 
@@ -57,6 +83,12 @@ export default class Repository extends Component {
         </Owner>
 
         <Issues>
+          <Select onChange={this.handleSelectChange}>
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </Select>
+
           {issues.map(issue => (
             <li key={String(issue.id)}>
               <img src={issue.user.avatar_url} alt={issue.user.login} />
