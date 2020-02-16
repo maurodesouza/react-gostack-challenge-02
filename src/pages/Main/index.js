@@ -16,6 +16,8 @@ export default class Main extends Component {
       newRepo: '',
       repositories: [],
       loading: false,
+      err: false,
+      message: 'Adicionar repositório',
     };
   }
 
@@ -45,13 +47,35 @@ export default class Main extends Component {
 
     this.setState({ loading: true });
 
+    const repoExit = repositories.find(({ name }) => name === newRepo);
+
+    if (repoExit) {
+      this.setState(
+        {
+          err: true,
+          newRepo: '',
+          message: 'Esse repositório já foi adicionado !',
+        },
+        () => {
+          setTimeout(() => {
+            this.setState({
+              err: false,
+              loading: false,
+              message: 'Adicionar repositório',
+            });
+          }, 1300);
+        }
+      );
+      return null;
+    }
+
     const response = await api.get(`/repos/${newRepo}`);
 
     const data = {
       name: response.data.full_name,
     };
 
-    this.setState({
+    return this.setState({
       repositories: [...repositories, data],
       newRepo: '',
       loading: false,
@@ -59,7 +83,7 @@ export default class Main extends Component {
   };
 
   render() {
-    const { newRepo, loading, repositories } = this.state;
+    const { newRepo, loading, repositories, err, message } = this.state;
 
     return (
       <Container>
@@ -68,10 +92,10 @@ export default class Main extends Component {
           Repositórios
         </h1>
 
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit} err={err ? 1 : 0}>
           <input
             type="text"
-            placeholder="Adicionar repositório"
+            placeholder={message}
             value={newRepo}
             onChange={this.handleInputChange}
           />
