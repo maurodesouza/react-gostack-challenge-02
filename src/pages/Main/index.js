@@ -49,12 +49,28 @@ export default class Main extends Component {
 
     const repoExit = repositories.find(({ name }) => name === newRepo);
 
-    if (repoExit) {
+    try {
+      if (repoExit) throw new Error();
+
+      const response = await api.get(`/repos/${newRepo}`);
+
+      const data = {
+        name: response.data.full_name,
+      };
+
+      return this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+        loading: false,
+      });
+    } catch (err) {
       this.setState(
         {
           err: true,
           newRepo: '',
-          message: 'Esse repositório já foi adicionado !',
+          message: err.request
+            ? 'Repositório não encontrado !'
+            : 'Esse repositório já foi adicionado !',
         },
         () => {
           setTimeout(() => {
@@ -68,18 +84,6 @@ export default class Main extends Component {
       );
       return null;
     }
-
-    const response = await api.get(`/repos/${newRepo}`);
-
-    const data = {
-      name: response.data.full_name,
-    };
-
-    return this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: false,
-    });
   };
 
   render() {
