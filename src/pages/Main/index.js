@@ -59,7 +59,7 @@ export default class Main extends Component {
       };
 
       return this.setState({
-        repositories: [...repositories, data],
+        repositories: [data, ...repositories],
         newRepo: '',
         loading: false,
       });

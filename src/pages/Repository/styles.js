@@ -115,3 +115,36 @@ export const Select = styled.select`
   font-weight: bold;
   width: 100px;
 `;
+
+export const Pagination = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 20px;
+
+  span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    padding: 5px 15px;
+    margin: 0 30px;
+    background: #7159c1;
+    border-radius: 4px;
+    cursor: default;
+  }
+`;
+
+export const ButtonPage = styled.button`
+  padding: 0 10px;
+  color: #fff;
+  background: #7159c1;
+  opacity: ${({ disabled }) => disabled && '0.8'};
+  cursor: ${({ disabled }) => disabled && 'not-allowed'};
+  border-radius: 4px;
+  border: 0;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

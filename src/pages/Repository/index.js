@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+
 import PropTypes from 'prop-types';
 
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Loading, Owner, Issues, Select } from './styles';
+import {
+  Loading,
+  Owner,
+  Issues,
+  Select,
+  Pagination,
+  ButtonPage,
+} from './styles';
 
 export default class Repository extends Component {
   constructor(props) {
@@ -17,6 +26,7 @@ export default class Repository extends Component {
       issues: [],
       loading: true,
       state: 'all',
+      page: 1,
     };
   }
 
@@ -31,7 +41,7 @@ export default class Repository extends Component {
       api.get(`/repos/${repoName}/issues`, {
         params: {
           state,
-          per_page: 5,
+          per_page: 15,
         },
       }),
     ]);
@@ -43,32 +53,46 @@ export default class Repository extends Component {
     });
   }
 
-  handleSelectChange = e => {
-    this.setState({ state: e.target.value });
+  pagination = async action => {
+    const { page } = this.state;
+
+    await this.setState({
+      page: action === 'next' ? page + 1 : page - 1,
+    });
+
+    this.fetchIssues();
+  };
+
+  handleSelectChange = async e => {
+    await this.setState({
+      state: e.target.value,
+      page: 1,
+    });
 
     this.fetchIssues();
   };
 
   async fetchIssues() {
     const { match } = this.props;
-    const { state } = this.state;
+    const { state, page } = this.state;
 
     const repoName = decodeURIComponent(match.params.repository);
 
     const response = await api.get(`/repos/${repoName}/issues`, {
       params: {
         state,
-        per_page: 5,
+        per_page: 15,
+        page,
       },
     });
 
-    this.setState({
+    await this.setState({
       issues: response.data,
     });
   }
 
   render() {
-    const { repository, issues, loading } = this.state;
+    const { repository, issues, loading, page } = this.state;
 
     if (loading) {
       return <Loading> Carregando </Loading>;
@@ -110,6 +134,24 @@ export default class Repository extends Component {
             </li>
           ))}
         </Issues>
+
+        <Pagination>
+          <ButtonPage
+            type="button"
+            disabled={page < 2}
+            onClick={() => this.pagination('back')}
+          >
+            <FaArrowLeft width={16} color="#fff" />
+          </ButtonPage>
+          <span>{page}</span>
+          <ButtonPage
+            type="button"
+            disabled={issues.length < 5}
+            onClick={() => this.pagination('next')}
+          >
+            <FaArrowRight width={16} color="#fff" />
+          </ButtonPage>
+        </Pagination>
       </Container>
     );
   }
