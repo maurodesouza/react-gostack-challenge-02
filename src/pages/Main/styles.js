@@ -1,4 +1,5 @@
 import styled, { keyframes, css } from 'styled-components';
+import { MdDelete } from 'react-icons/md';
 
 export const Form = styled.form`
   margin-top: 30px;
@@ -70,6 +71,18 @@ export const List = styled.ul`
     a {
       color: #7159c1;
       text-decoration: none;
+      margin-right: 30px;
     }
   }
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+`;
+
+export const Delete = styled(MdDelete)`
+  color: #7159c1;
+  font-size: 20px;
+  cursor: pointer;
 `;

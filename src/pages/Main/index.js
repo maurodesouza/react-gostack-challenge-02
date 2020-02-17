@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
 
 import Container from '../../components/Container';
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, Delete } from './styles';
 
 import api from '../../services/api';
 
@@ -38,6 +38,13 @@ export default class Main extends Component {
 
   handleInputChange = e => {
     this.setState({ newRepo: e.target.value });
+  };
+
+  deleteRepo = repo => {
+    const { repositories } = this.state;
+    this.setState({
+      repositories: repositories.filter(r => r.name !== repo),
+    });
   };
 
   handleSubmit = async e => {
@@ -116,9 +123,12 @@ export default class Main extends Component {
           {repositories.map(({ name }) => (
             <li key={name}>
               <span> {name} </span>
-              <Link to={`/repository/${encodeURIComponent(name)}`}>
-                Detalhes
-              </Link>
+              <div>
+                <Link to={`/repository/${encodeURIComponent(name)}`}>
+                  Detalhes
+                </Link>
+                <Delete onClick={() => this.deleteRepo(name)} />
+              </div>
             </li>
           ))}
         </List>
