@@ -16,7 +16,7 @@
 
 ## :dart: Sobre o projeto
 
-  ![React app Gif](.github/react-app.gif)
+  ![React app Gif](.github/layout.gif)
 
   Criar uma aplicação onde seja possível adicionar e listar projetos no Github ! E quando clicar sobre algum projeto, listar as suas issues !
 
